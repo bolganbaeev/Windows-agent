@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EXAM CONTROLLER</title>
+  <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <p class="eyebrow">SCHOOL LAB · DEVICE MONITORING</p>
+        <h1>EXAM CONTROLLER</h1>
+        <p class="subtitle">Live status of registered Windows agents</p>
+      </div>
+      <span class="live-indicator"><span></span> LIVE · updates every 4 seconds</span>
+    </header>
+
+    <section class="panel" aria-labelledby="agents-title">
+      <div class="panel-heading">
+        <div>
+          <h2 id="agents-title">Managed agents</h2>
+          <p id="agent-count">{{ agents|length }} registered</p>
+        </div>
+        <p id="updated-at" class="updated-at">Loading status…</p>
+      </div>
+      <div id="load-error" class="load-error" role="status" {% if not error %}hidden{% endif %}>{{ error or '' }}</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Hostname</th>
+              <th scope="col">Agent ID</th>
+              <th scope="col">IP Address</th>
+              <th scope="col">Network</th>
+              <th scope="col">Status</th>
+              <th scope="col">Last Seen</th>
+              <th scope="col">Agent Version</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="agents-body">
+            {% for agent in agents %}
+            <tr>
+              <td class="hostname">{{ agent.hostname }}</td>
+              <td class="agent-id">{{ agent.agent_id }}</td>
+              <td>{{ agent.current_ip or '—' }}</td>
+              <td>{{ agent.network or '—' }}</td>
+              <td><span class="status status-{{ agent.status|lower }}">{{ agent.status }}</span></td>
+              <td>{{ agent.last_seen or '—' }}</td>
+              <td>{{ agent.version or '—' }}</td>
+              <td class="actions"><button type="button" disabled>Change IP</button><button type="button" disabled>Open Test</button></td>
+            </tr>
+            {% else %}
+            <tr class="empty-row"><td colspan="8">No agents registered.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">Management actions are unavailable in this monitoring phase.</p>
+    </section>
+    <footer>Local lab monitoring · Agent check-in threshold: 15 seconds</footer>
+  </main>
+  <script src="/static/dashboard.js" defer></script>
+</body>
+</html>
